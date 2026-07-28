@@ -102,7 +102,7 @@
     main {
       position: relative;
       z-index: 1;
-      width: min(860px, 100%);
+      width: min(1120px, 100%);
       padding: clamp(38px, 7vw, 76px);
       text-align: center;
       background: var(--panel);
@@ -193,6 +193,135 @@
       animation: pulse 2s ease-in-out infinite;
     }
 
+    .playlist-section {
+      margin-top: 44px;
+      text-align: left;
+    }
+
+    .playlist-section h2 {
+      margin: 0;
+      text-align: center;
+      font-size: clamp(1.55rem, 3vw, 2.2rem);
+      letter-spacing: -0.025em;
+    }
+
+    .playlist-intro {
+      max-width: 660px;
+      margin: 12px auto 24px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .playlist-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .playlist-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 210px;
+      padding: 20px;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background:
+        linear-gradient(145deg, rgba(94, 213, 255, 0.10), rgba(143, 121, 255, 0.08)),
+        rgba(255, 255, 255, 0.025);
+      transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease;
+    }
+
+    .playlist-card:hover,
+    .playlist-card:focus-visible {
+      transform: translateY(-3px);
+      border-color: rgba(94, 213, 255, 0.55);
+      background:
+        linear-gradient(145deg, rgba(94, 213, 255, 0.16), rgba(143, 121, 255, 0.12)),
+        rgba(255, 255, 255, 0.04);
+      outline: none;
+    }
+
+    .playlist-kicker {
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .playlist-card h3 {
+      margin: 12px 0 8px;
+      font-size: 1.18rem;
+      line-height: 1.25;
+    }
+
+    .playlist-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.91rem;
+      line-height: 1.5;
+    }
+
+    .spotify-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 18px;
+      color: #ffffff;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .spotify-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #1ed760;
+      box-shadow: 0 0 12px rgba(30, 215, 96, 0.55);
+    }
+
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .social-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 148px;
+      padding: 12px 18px;
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.045);
+      transition:
+        color 160ms ease,
+        transform 160ms ease,
+        border-color 160ms ease;
+    }
+
+    .social-button:hover,
+    .social-button:focus-visible {
+      color: var(--accent);
+      transform: translateY(-1px);
+      border-color: rgba(94, 213, 255, 0.5);
+      outline: none;
+    }
+
     .contact {
       display: flex;
       flex-wrap: wrap;
@@ -245,6 +374,12 @@
       }
     }
 
+    @media (max-width: 900px) {
+      .playlist-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     @media (max-width: 620px) {
       main {
         padding: 42px 22px;
@@ -258,6 +393,10 @@
 
       .services {
         letter-spacing: 0.12em;
+      }
+
+      .playlist-grid {
+        grid-template-columns: 1fr;
       }
 
       .contact {
@@ -304,6 +443,61 @@
     <div class="status">
       <span class="status-dot" aria-hidden="true"></span>
       Currently preparing for launch
+    </div>
+
+    <section class="playlist-section" aria-labelledby="spotify-heading">
+      <h2 id="spotify-heading">Listen on Spotify</h2>
+      <p class="playlist-intro">
+        Explore our growing collection of fan-curated resort, park, and area-music playlists.
+      </p>
+
+      <div class="playlist-grid">
+        <a class="playlist-card" href="https://open.spotify.com/playlist/5xRKSFfh1PM4E2n9szEXB1?si=2a97acb489a64191" target="_blank" rel="noopener noreferrer">
+          <span class="playlist-kicker">WDW</span>
+          <h3>Contemporary Resort</h3>
+          <p>Smooth jazz and instrumental selections associated with Disney's Contemporary Resort.</p>
+          <span class="spotify-label"><span class="spotify-dot" aria-hidden="true"></span>Open playlist</span>
+        </a>
+
+        <a class="playlist-card" href="https://open.spotify.com/playlist/0IT4Ci3w25OgaAXMyFdyyw?si=517a6386242d416e" target="_blank" rel="noopener noreferrer">
+          <span class="playlist-kicker">EPCOT</span>
+          <h3>Entrance Area Music</h3>
+          <p>Cinematic and uplifting music from the EPCOT entrance-area loop.</p>
+          <span class="spotify-label"><span class="spotify-dot" aria-hidden="true"></span>Open playlist</span>
+        </a>
+
+        <a class="playlist-card" href="https://open.spotify.com/playlist/1UbZohzEqqu1XYAN1WuFAD?si=02a9b1b7f16443b4" target="_blank" rel="noopener noreferrer">
+          <span class="playlist-kicker">Hollywood Studios</span>
+          <h3>Sunset Boulevard</h3>
+          <p>Vintage big-band and period music associated with Sunset Boulevard and the Tower of Terror area.</p>
+          <span class="spotify-label"><span class="spotify-dot" aria-hidden="true"></span>Open playlist</span>
+        </a>
+
+        <a class="playlist-card" href="https://open.spotify.com/playlist/2JzM2oON8PdqSwNKfnryEl?si=4276b71060b24961" target="_blank" rel="noopener noreferrer">
+          <span class="playlist-kicker">Hollywood Studios</span>
+          <h3>Entrance Area Music</h3>
+          <p>Film, television, and orchestral themes from the former park-entrance loop.</p>
+          <span class="spotify-label"><span class="spotify-dot" aria-hidden="true"></span>Open playlist</span>
+        </a>
+
+        <a class="playlist-card" href="https://open.spotify.com/playlist/3CPyfyn5hp6mmMOt5zF8iM?si=b540194ae8c14c88" target="_blank" rel="noopener noreferrer">
+          <span class="playlist-kicker">Disney Springs</span>
+          <h3>Town Center Daytime</h3>
+          <p>Relaxed global, lounge, and electronic selections associated with Town Center during the day.</p>
+          <span class="spotify-label"><span class="spotify-dot" aria-hidden="true"></span>Open playlist</span>
+        </a>
+
+        <a class="playlist-card" href="https://open.spotify.com/playlist/4gVj3G4VNmGIZrIB9qrDg1?si=c5f542fe914244bd" target="_blank" rel="noopener noreferrer">
+          <span class="playlist-kicker">Animal Kingdom</span>
+          <h3>Discovery Island</h3>
+          <p>World music, percussion, and atmospheric selections associated with Discovery Island.</p>
+          <span class="spotify-label"><span class="spotify-dot" aria-hidden="true"></span>Open playlist</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="social-links" aria-label="Parks and More social links">
+      <a class="social-button" href="https://www.facebook.com/profile.php?id=61592352340285" target="_blank" rel="noopener noreferrer">Facebook</a>
     </div>
 
     <div class="contact">
