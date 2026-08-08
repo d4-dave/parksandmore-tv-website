@@ -187,3 +187,9 @@ button, input, select, textarea { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
 }
+
+/* Checkpoint 2: Backend-owned park → land/area → attraction hierarchy. */
+.area-list { display: grid; gap: 34px; }
+.area-group { scroll-margin-top: 110px; }
+.area-group-heading { margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.area-group-heading h3 { margin: 5px 0 0; font-size: clamp(1.2rem, 2.2vw, 1.6rem); letter-spacing: -.025em; }

@@ -30,7 +30,7 @@ function backendBaseUrl(): string {
 async function getPublicWaits<T>(path: string): Promise<T> {
   const response = await fetch(`${backendBaseUrl()}${PUBLIC_WAITS_PATH}${path}`, {
     headers: { Accept: "application/json" },
-    next: { revalidate: 30 },
+    cache: "no-store",
   });
 
   if (!response.ok) {

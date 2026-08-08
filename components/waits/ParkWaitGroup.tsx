@@ -1,5 +1,13 @@
-import { AttractionWaitCard } from "@/components/waits/AttractionWaitCard";
-import type { PublicWaitPark } from "@/types/public-waits";
+import { LandWaitGroup } from "@/components/waits/LandWaitGroup";
+import type { PublicWaitAttraction, PublicWaitPark } from "@/types/public-waits";
+
+function attractionsForArea(park: PublicWaitPark, attractionIds: string[]): PublicWaitAttraction[] {
+  const byId = new Map(park.attractions.map((attraction) => [attraction.id, attraction]));
+  return attractionIds.flatMap((id) => {
+    const attraction = byId.get(id);
+    return attraction ? [attraction] : [];
+  });
+}
 
 export function ParkWaitGroup({ park }: { park: PublicWaitPark }) {
   return (
@@ -14,18 +22,27 @@ export function ParkWaitGroup({ park }: { park: PublicWaitPark }) {
             {park.errorState ? "Some current park data is unavailable." : "Current park data is unavailable."}
           </p>
         ) : park.isStale ? (
-          <p className="availability-note" role="status">Park data includes stale observations.</p>
+          <p className="availability-note" role="status">Some park information is cached.</p>
         ) : null}
       </div>
 
-      {park.attractions.length > 0 ? (
-        <div className="wait-grid">
-          {park.attractions.map((attraction) => (
-            <AttractionWaitCard key={attraction.id} attraction={attraction} timeZone={park.timezone} />
+      {park.areas.length > 0 ? (
+        <div className="area-list">
+          {park.areas.map((area) => (
+            <LandWaitGroup
+              key={area.id}
+              area={area}
+              attractions={attractionsForArea(park, area.attractionIds)}
+              timeZone={park.timezone}
+            />
           ))}
         </div>
+      ) : park.attractions.length > 0 ? (
+        <div className="state-panel" role="status">
+          Land / area grouping is temporarily unavailable for this park.
+        </div>
       ) : (
-        <div className="state-panel">No curated attraction data is available for this park.</div>
+        <div className="state-panel">No destination wait attraction data is available for this park.</div>
       )}
     </section>
   );

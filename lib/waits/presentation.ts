@@ -17,7 +17,15 @@ export function shouldDisplayStandbyWait(attraction: PublicWaitAttraction): bool
 }
 
 export function attractionFreshnessLabel(attraction: PublicWaitAttraction): string {
-  if (attraction.dataState === "MISSING") return "Current data unavailable";
-  if (attraction.isStale || attraction.dataState === "STALE") return "Last reported data";
-  return "Current data";
+  if (attraction.dataState === "MISSING") return "Unavailable";
+  if (attraction.isStale || attraction.dataState === "STALE") return "Cached";
+  return "Live";
+}
+
+export function unavailableWaitLabel(attraction: PublicWaitAttraction): string {
+  if (attraction.availabilityReason === "PARK_CLOSED") return "Park closed";
+  if (attraction.operatingState === "TEMPORARILY_CLOSED") return "Temporarily closed";
+  if (attraction.operatingState === "REFURBISHMENT") return "Refurbishment";
+  if (attraction.operatingState === "CLOSED") return "Closed";
+  return "Wait unavailable";
 }

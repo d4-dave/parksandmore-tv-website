@@ -15,7 +15,7 @@ export function FreshnessIndicator({
   return (
     <p className={`freshness freshness-${attraction.dataState.toLowerCase()}`}>
       <span>{label}</span>
-      {observed ? <span> · observed {observed}</span> : null}
+      {observed && label !== "Unavailable" ? <span> · observed {observed}</span> : null}
     </p>
   );
 }

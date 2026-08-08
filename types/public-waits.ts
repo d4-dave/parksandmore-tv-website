@@ -8,6 +8,15 @@ export type OperatingState =
 export type PublicWaitDataState = "CURRENT" | "STALE" | "MISSING";
 export type PublicWaitCurationContext = "HOMEPAGE_TOP" | "DESTINATION_WAITS";
 
+export interface PublicWaitLastObservation {
+  operatingState: OperatingState;
+  standbyWaitMinutes: number | null;
+  waitAvailable: boolean;
+  observedAt: string | null;
+  isStale: boolean;
+  dataState: PublicWaitDataState;
+}
+
 export interface PublicWaitAttraction {
   id: string;
   name: string;
@@ -18,13 +27,26 @@ export interface PublicWaitAttraction {
   curationContexts: PublicWaitCurationContext[];
   homepageOrder: number | null;
   destinationOrder: number | null;
+  areaId: string | null;
+  areaName: string | null;
+  areaOrder: number | null;
+  areaAttractionOrder: number | null;
   operatingState: OperatingState;
   standbyWaitMinutes: number | null;
   waitAvailable: boolean;
+  availabilityReason: string | null;
   observedAt: string | null;
   generatedAt: string;
   isStale: boolean;
   dataState: PublicWaitDataState;
+  lastObservation: PublicWaitLastObservation | null;
+}
+
+export interface PublicWaitArea {
+  id: string;
+  name: string;
+  order: number;
+  attractionIds: string[];
 }
 
 export interface PublicWaitDestinationSummary {
@@ -49,11 +71,6 @@ export interface PublicWaitHomepageDestination {
   attractions: PublicWaitAttraction[];
 }
 
-export interface PublicWaitHomepageResponse {
-  generatedAt: string;
-  destinations: PublicWaitHomepageDestination[];
-}
-
 export interface PublicWaitPark {
   id: string;
   name: string;
@@ -65,6 +82,7 @@ export interface PublicWaitPark {
   observedAt: string | null;
   isStale: boolean;
   errorState: string | null;
+  areas: PublicWaitArea[];
   attractions: PublicWaitAttraction[];
 }
 
@@ -76,4 +94,9 @@ export interface PublicWaitDestination {
   isStale: boolean;
   dataAvailable: boolean;
   parks: PublicWaitPark[];
+}
+
+export interface PublicWaitHomepageResponse {
+  generatedAt: string;
+  destinations: PublicWaitHomepageDestination[];
 }

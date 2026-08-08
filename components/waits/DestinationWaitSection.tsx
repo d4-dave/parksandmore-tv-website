@@ -27,7 +27,7 @@ export function DestinationWaitSection({ destination }: { destination: PublicWai
 
       {destination.isStale ? (
         <p className="section-status" role="status">
-          Some attraction information is currently stale. Last-reported values are labeled below.
+          Some attraction information is cached. Cached items are labeled below.
         </p>
       ) : null}
 
