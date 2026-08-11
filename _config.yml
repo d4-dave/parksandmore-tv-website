@@ -1,9 +1,0 @@
-title: Parks & More
-url: https://parksandmore.tv
-markdown: kramdown
-kramdown:
-  input: GFM
-permalink: pretty
-exclude:
-  - README.md
-  - PLACEHOLDER-TRANSITION-NOTES.md
