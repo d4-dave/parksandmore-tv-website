@@ -1,9 +1,9 @@
----
+﻿---
 layout: news-article
-title: "Disney’s 2026 D23 Parks Showcase Will Stream Live — Here’s What We’re Watching For"
+title: "Disney's 2026 D23 Parks Showcase Will Stream Live - Here's What We're Watching For"
 date: 2026-08-10
 permalink: /news/d23-2026-disney-experiences-showcase/
-description: "Disney’s 2026 D23 Parks Showcase will stream live on Disney+. Here’s what Parks & More is watching for from Walt Disney World and beyond."
+description: "Disney's 2026 D23 Parks Showcase will stream live on Disney+. Here's what Parks & More is watching for from Walt Disney World and beyond."
 image: /news/images/d23-2026-header.jpg
 imageAlt: "D23 2026 Disney Experiences Showcase artwork"
 imageCredit: "Image: D23"
@@ -75,3 +75,5 @@ Whatever Disney has planned, the fact that the showcase is streaming live should
   <img src="/news/images/d23-2026-footer.jpg" alt="D23 2026 event stage">
   <figcaption>Image: D23</figcaption>
 </figure>
+
+
