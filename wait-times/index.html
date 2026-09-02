@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Wait Times | Parks & More</title>
+  <meta name="description" content="Current attraction wait times and operating status for Walt Disney World and Universal Orlando Resort.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Parks & More Wait Times">
+  <meta property="og:description" content="Current attraction wait times across Walt Disney World and Universal Orlando Resort.">
+  <meta property="og:url" content="https://parksandmore.tv/wait-times/">
+  <link rel="canonical" href="https://parksandmore.tv/wait-times/">
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="/">Parks &amp; More</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/">Home</a>
+        <a href="/wait-times/" aria-current="page">Wait Times</a>
+        <a href="/news/">News</a>
+        <a href="/music/">Music</a>
+        <a href="/resort-tv/">Resort TV</a>
+      </nav>
+    </header>
+
+    <main class="panel content wait-times-page">
+      <div class="wait-times-page-head">
+        <div>
+          <p class="eyebrow">Current park conditions</p>
+          <h1 class="page-title">Wait Times</h1>
+          <p class="lede wait-times-lede">Current attraction waits and operating status across Walt Disney World and Universal Orlando Resort.</p>
+        </div>
+        <div class="wait-times-actions">
+          <span id="all-waits-refresh-time" aria-live="polite">Loading live status…</span>
+          <button id="all-waits-refresh" class="refresh-button" type="button">Refresh</button>
+        </div>
+      </div>
+
+      <div id="all-waits-destinations" class="all-waits-destinations" aria-live="polite">
+        <div class="wait-page-message">Loading current attraction waits…</div>
+      </div>
+
+      <p class="live-data-inline-credit">Live data powered by ThemeParks.wiki</p>
+    </main>
+
+    <footer class="site-footer">&copy; <span data-year></span> Parks &amp; More</footer>
+  </div>
+  <script src="/assets/all-waits.js" defer></script>
+  <script>document.querySelectorAll('[data-year]').forEach(e=>e.textContent=new Date().getFullYear())</script>
+</body>
+</html>

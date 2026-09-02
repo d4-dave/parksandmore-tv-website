@@ -56,3 +56,18 @@ h1{margin:0;font-size:clamp(2.65rem,8vw,6.3rem);font-weight:800;letter-spacing:-
 .article-page .article-meta{margin-top:16px}
 .article-hero{max-width:920px;margin:30px auto 0}.article-hero img{display:block;width:100%;height:auto;border-radius:20px;border:1px solid var(--border)}.article-hero figcaption{margin-top:8px;color:var(--muted);font-size:.76rem;text-align:right}
 .article-body h2{margin-top:34px;font-size:1.55rem;color:#fff}.article-body h3{margin-top:28px;font-size:1.22rem;color:#fff}.article-body blockquote{margin:28px 0;padding:4px 0 4px 18px;border-left:3px solid var(--accent);color:var(--muted)}.article-body img{max-width:100%;height:auto;border-radius:16px}.article-body a{overflow-wrap:anywhere}.article-back{margin-top:34px}
+.wait-times-page{padding:clamp(30px,5vw,54px)}
+.wait-times-page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:28px}
+.wait-times-lede{margin:18px 0 0;max-width:760px}
+.wait-times-actions{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.82rem;white-space:nowrap}
+.refresh-button{appearance:none;border:1px solid var(--border);border-radius:999px;padding:9px 14px;color:#fff;background:rgba(255,255,255,.055);font:inherit;font-weight:700;cursor:pointer}
+.refresh-button:hover,.refresh-button:focus-visible{border-color:rgba(94,213,255,.55);background:rgba(94,213,255,.09);outline:none}.refresh-button:disabled{cursor:wait;opacity:.55}
+.all-waits-destinations{margin-top:38px}.destination-waits-section+.destination-waits-section{margin-top:54px;padding-top:44px;border-top:1px solid var(--border)}
+.destination-waits-head{margin-bottom:22px}.destination-waits-head .eyebrow{margin-bottom:8px}.destination-waits-head h2{margin:0;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:-.04em}
+.park-waits-block+.park-waits-block{margin-top:34px}.park-waits-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:14px}.park-waits-head h2{margin:0;font-size:1.28rem}.park-waits-head span{color:var(--muted);font-size:.76rem}
+.all-waits-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.all-waits-card{min-height:136px}.all-waits-card[data-state="refurbishment"] .status-dot-small{background:var(--warn)}
+.wait-page-message{padding:22px;border:1px dashed var(--border);border-radius:18px;color:var(--muted);background:rgba(255,255,255,.02)}
+.live-data-inline-credit{margin:34px 0 0;color:rgba(255,255,255,.32);font-size:.68rem;text-align:center}
+@media(max-width:1000px){.all-waits-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:780px){.wait-times-page-head{align-items:flex-start;flex-direction:column}.wait-times-actions{white-space:normal}.all-waits-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.all-waits-grid{grid-template-columns:1fr}.park-waits-head{align-items:flex-start;flex-direction:column;gap:5px}}
