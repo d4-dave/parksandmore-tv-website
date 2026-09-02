@@ -122,9 +122,9 @@
   // list easier to scan. DELETE them with this placeholder at Next.js cutover.
   const AREA_RULES = {
     'Magic Kingdom Park': [
-      ['Main Street, U.S.A.', ['Main Street Vehicles', 'Walt Disney World Railroad - Main Street']],
-      ['Adventureland', ['Jungle Cruise', 'Pirates of the Caribbean', "Walt Disney's Enchanted Tiki Room", "A Pirate's Adventure", 'The Magic Carpets of Aladdin']],
-      ['Frontierland', ['Big Thunder Mountain Railroad', "Tiana's Bayou Adventure"]],
+      ['Main Street, U.S.A.', ['Main Street Vehicles', 'Walt Disney World Railroad - Main Street', 'Cinderella Castle']],
+      ['Adventureland', ['Jungle Cruise', 'Pirates of the Caribbean', "Walt Disney's Enchanted Tiki Room", "A Pirate's Adventure", 'The Magic Carpets of Aladdin', 'Swiss Family Treehouse']],
+      ['Frontierland', ['Big Thunder Mountain Railroad', "Tiana's Bayou Adventure", 'Country Bear Musical Jamboree']],
       ['Liberty Square', ['Haunted Mansion', 'The Hall of Presidents']],
       ['Fantasyland', ['Seven Dwarfs Mine Train', 'Peter Pan', 'small world', 'Dumbo', 'Prince Charming Regal Carrousel', 'Mad Tea Party', "Mickey's PhilharMagic", 'Winnie the Pooh', 'Under the Sea', 'Enchanted Tales with Belle', 'The Barnstormer', 'Walt Disney World Railroad - Fantasyland', "Casey Jr. Splash"]],
       ['Tomorrowland', ['TRON Lightcycle', 'Space Mountain', 'Buzz Lightyear', 'Tomorrowland Speedway', 'PeopleMover', 'Carousel of Progress', 'Monsters, Inc. Laugh Floor', 'Astro Orbiter']]
@@ -133,6 +133,9 @@
       ['World Celebration', ['Spaceship Earth', 'Journey Into Imagination', 'Disney and Pixar Short Film Festival']],
       ['World Discovery', ['Guardians of the Galaxy', 'Mission: SPACE', 'Test Track']],
       ['World Nature', ['Soarin', 'Living with the Land', 'The Seas with Nemo', 'Turtle Talk']],
+      ['World Showcase – France', ['Beauty and the Beast Sing-Along']],
+      ['World Showcase – Canada', ['Canada Far and Wide']],
+      ['World Showcase – China', ['Reflections of China']],
       ['World Showcase', ['Frozen Ever After', 'Gran Fiesta Tour', "Remy's Ratatouille Adventure", 'American Adventure']]
     ],
     "Disney's Hollywood Studios": [
@@ -145,8 +148,9 @@
       ['Sunset Boulevard', ['Tower of Terror', 'Rock ’n’ Roller Coaster', "Rock 'n' Roller Coaster", 'Lightning McQueen']]
     ],
     "Disney's Animal Kingdom Theme Park": [
-      ['Oasis', ['The Oasis Exhibits']],
+      ['Oasis', ['The Oasis Exhibits', 'Wilderness Explorers']],
       ['Discovery Island', ["It's Tough to be a Bug", 'Tree of Life', 'Discovery Island Trails']],
+      ['Tree of Life', ['Zootopia: Better Zoogether']],
       ['Pandora – The World of Avatar', ['Avatar Flight of Passage', 'Na’vi River Journey', "Na'vi River Journey"]],
       ['Africa', ['Kilimanjaro Safaris', 'Gorilla Falls', 'Wildlife Express Train']],
       ['Rafiki’s Planet Watch', ['Conservation Station', 'Affection Section', 'Animation Experience']],
@@ -160,11 +164,13 @@
       ['The Wizarding World of Harry Potter – Diagon Alley', ['Escape from Gringotts', "Hogwarts Express™ - King's Cross", "Hogwarts Express - King's Cross"]],
       ['World Expo', ['MEN IN BLACK']],
       ['Springfield, U.S.A.', ['The Simpsons Ride', 'Kang & Kodos']],
-      ['DreamWorks Land', ['Trolls Trollercoaster', 'Po’s Kung Fu Training Camp', "Po's Kung Fu Training Camp"]]
+      ['DreamWorks Land', ['Trolls Trollercoaster', 'Po’s Kung Fu Training Camp', "Po's Kung Fu Training Camp"]],
+      ['Hollywood', ['E.T. Adventure']],
+      ['Halloween Horror Nights', ['Cybergoria', 'Evil Dead Burn', 'Bloodengutz', 'Hellraiser', 'INVASION: Alien Abduction', 'Jack & Oddfellow', 'MADLANDS', 'Ozzy Osbourne', 'Sinners', 'Stranger Things 5']]
     ],
     "Universal's Islands of Adventure": [
       ['Port of Entry', []],
-      ['Marvel Super Hero Island', ['Incredible Hulk', 'Doctor Doom', 'Storm Force']],
+      ['Marvel Super Hero Island', ['Incredible Hulk', 'Doctor Doom', 'Storm Force', 'The Amazing Adventures of Spider-Man']],
       ['Toon Lagoon', ['Dudley Do-Right', 'Popeye & Bluto']],
       ['Skull Island', ['Skull Island']],
       ['Jurassic Park', ['Jurassic World VelociCoaster', 'Jurassic Park River Adventure', 'Pteranodon Flyers']],
@@ -175,7 +181,7 @@
     'Universal Islands of Adventure': null,
     'Universal Epic Universe': [
       ['Celestial Park', ['Stardust Racers', 'Constellation Carousel', 'Astronomica']],
-      ['Super Nintendo World', ['Mario Kart', "Yoshi's Adventure", 'Mine-Cart Madness']],
+      ['Super Nintendo World', ['Mario Kart', "Yoshi's Adventure", 'Mine-Cart Madness', 'Bowser Jr. Challenge']],
       ['Dark Universe', ['Monsters Unchained', 'Curse of the Werewolf']],
       ['The Wizarding World of Harry Potter – Ministry of Magic', ['Battle at the Ministry']],
       ['How to Train Your Dragon – Isle of Berk', ["Hiccup's Wing Gliders", 'Dragon Racer', 'Fyre Drill']]
@@ -189,9 +195,51 @@
     'Volcano Bay': null
   };
 
+
+  // TEMPORARY PLACEHOLDER HIDE LIST.
+  // These provider entities are intentionally omitted from the disposable public
+  // waits page because they are not useful guest-facing standby-wait cards here.
+  // This is not authoritative curation and must be deleted at Next.js cutover.
+  const HIDDEN_ATTRACTIONS = {
+    'EPCOT': [
+      'Advanced Training Lab',
+      'American Heritage Gallery',
+      'Awesome Planet',
+      'Bijutsu-kan Gallery',
+      "Bruce's Shark World",
+      'Gallery of Arts and History',
+      'House of the Whispering Willows',
+      'ImageWorks - The "What If" Labs',
+      'Impressions de France',
+      'Journey of Water, Inspired by Moana',
+      'Kidcot Fun Stops',
+      'Mexico Folk Art Gallery',
+      'Palais du Cinéma',
+      'Project Tomorrow: Inventing the Wonders of the Future',
+      'SeaBase Aquarium',
+      'Stave Church Gallery'
+    ],
+    'Universal Studios Florida': [
+      'Hogwarts™ Express - First Train',
+      'Hogwarts™ Express - Last Train',
+      'Hogwarts Express - First Train',
+      'Hogwarts Express - Last Train'
+    ],
+    "Universal's Islands of Adventure": [
+      'Camp Jurassic™',
+      'Camp Jurassic',
+      'If I Ran The Zoo™',
+      'If I Ran The Zoo',
+      'Jurassic Park Discovery Center',
+      'Me Ship, The Olive®',
+      'Me Ship, The Olive'
+    ]
+  };
+
   AREA_RULES['Universal Islands of Adventure'] = AREA_RULES["Universal's Islands of Adventure"];
   AREA_RULES['Epic Universe'] = AREA_RULES['Universal Epic Universe'];
   AREA_RULES['Volcano Bay'] = AREA_RULES["Universal's Volcano Bay"];
+  HIDDEN_ATTRACTIONS['Universal Islands of Adventure'] = HIDDEN_ATTRACTIONS["Universal's Islands of Adventure"];
 
   function normalizeMatchText(value) {
     return String(value || '')
@@ -200,6 +248,12 @@
       .replace(/[’‘]/g, "'")
       .replace(/[–—]/g, '-')
       .toLowerCase();
+  }
+
+  function isHiddenAttraction(parkName, attractionName) {
+    const hidden = HIDDEN_ATTRACTIONS[parkName] || [];
+    const normalizedName = normalizeMatchText(attractionName);
+    return hidden.some(name => normalizedName === normalizeMatchText(name));
   }
 
   function resolveMappedArea(parkName, attractionName) {
@@ -259,7 +313,9 @@
       </section>`;
     }
 
-    const attractions = items.filter(item => String(item?.entityType || '').toUpperCase() === 'ATTRACTION');
+    const attractions = items
+      .filter(item => String(item?.entityType || '').toUpperCase() === 'ATTRACTION')
+      .filter(item => !isHiddenAttraction(park.name, item?.name));
     const areas = new Map();
 
     for (const item of attractions) {
