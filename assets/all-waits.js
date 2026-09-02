@@ -41,7 +41,6 @@
   const refreshedEl = document.getElementById('all-waits-refresh-time');
   const refreshButton = document.getElementById('all-waits-refresh');
   let parkCatalog = null;
-  const topologyCache = new Map();
   let refreshInFlight = false;
 
   function escapeHtml(value) {
@@ -116,51 +115,105 @@
     return discovered;
   }
 
-  async function loadParkTopology(park) {
-    if (topologyCache.has(park.id)) return topologyCache.get(park.id);
+  // TEMPORARY THROWAWAY AREA MAPPING.
+  // ThemeParks.wiki's park /children payload currently flattens attractions to the
+  // park parent, so the placeholder cannot derive land/area membership directly.
+  // These guest-facing mappings exist only to make the temporary GitHub Pages wait
+  // list easier to scan. DELETE them with this placeholder at Next.js cutover.
+  const AREA_RULES = {
+    'Magic Kingdom Park': [
+      ['Main Street, U.S.A.', ['Main Street Vehicles', 'Walt Disney World Railroad - Main Street']],
+      ['Adventureland', ['Jungle Cruise', 'Pirates of the Caribbean', "Walt Disney's Enchanted Tiki Room", "A Pirate's Adventure", 'The Magic Carpets of Aladdin']],
+      ['Frontierland', ['Big Thunder Mountain Railroad', "Tiana's Bayou Adventure"]],
+      ['Liberty Square', ['Haunted Mansion', 'The Hall of Presidents']],
+      ['Fantasyland', ['Seven Dwarfs Mine Train', 'Peter Pan', 'small world', 'Dumbo', 'Prince Charming Regal Carrousel', 'Mad Tea Party', "Mickey's PhilharMagic", 'Winnie the Pooh', 'Under the Sea', 'Enchanted Tales with Belle', 'The Barnstormer', 'Walt Disney World Railroad - Fantasyland', "Casey Jr. Splash"]],
+      ['Tomorrowland', ['TRON Lightcycle', 'Space Mountain', 'Buzz Lightyear', 'Tomorrowland Speedway', 'PeopleMover', 'Carousel of Progress', 'Monsters, Inc. Laugh Floor', 'Astro Orbiter']]
+    ],
+    'EPCOT': [
+      ['World Celebration', ['Spaceship Earth', 'Journey Into Imagination', 'Disney and Pixar Short Film Festival']],
+      ['World Discovery', ['Guardians of the Galaxy', 'Mission: SPACE', 'Test Track']],
+      ['World Nature', ['Soarin', 'Living with the Land', 'The Seas with Nemo', 'Turtle Talk']],
+      ['World Showcase', ['Frozen Ever After', 'Gran Fiesta Tour', "Remy's Ratatouille Adventure", 'American Adventure']]
+    ],
+    "Disney's Hollywood Studios": [
+      ['Hollywood Boulevard', ['Mickey & Minnie’s Runaway Railway', "Mickey & Minnie's Runaway Railway"]],
+      ['Echo Lake', ['Star Tours', 'Indiana Jones', 'Vacation Fun']],
+      ['Grand Avenue', ['Muppet', 'Mama Melrose']],
+      ['Star Wars: Galaxy’s Edge', ['Rise of the Resistance', 'Millennium Falcon']],
+      ['Toy Story Land', ['Slinky Dog Dash', 'Toy Story Mania', 'Alien Swirling Saucers']],
+      ['Animation Courtyard', ['Walt Disney Presents', 'Disney Junior']],
+      ['Sunset Boulevard', ['Tower of Terror', 'Rock ’n’ Roller Coaster', "Rock 'n' Roller Coaster", 'Lightning McQueen']]
+    ],
+    "Disney's Animal Kingdom Theme Park": [
+      ['Oasis', ['The Oasis Exhibits']],
+      ['Discovery Island', ["It's Tough to be a Bug", 'Tree of Life', 'Discovery Island Trails']],
+      ['Pandora – The World of Avatar', ['Avatar Flight of Passage', 'Na’vi River Journey', "Na'vi River Journey"]],
+      ['Africa', ['Kilimanjaro Safaris', 'Gorilla Falls', 'Wildlife Express Train']],
+      ['Rafiki’s Planet Watch', ['Conservation Station', 'Affection Section', 'Animation Experience']],
+      ['Asia', ['Expedition Everest', 'Kali River Rapids', 'Maharajah Jungle Trek']],
+      ['DinoLand U.S.A.', ['DINOSAUR', 'TriceraTop Spin']]
+    ],
+    'Universal Studios Florida': [
+      ['Minion Land', ['Despicable Me Minion Mayhem', 'Villain-Con Minion Blast']],
+      ['New York', ['Revenge of the Mummy', 'Race Through New York', 'TRANSFORMERS']],
+      ['San Francisco', ['Fast & Furious', 'Fast and Furious']],
+      ['The Wizarding World of Harry Potter – Diagon Alley', ['Escape from Gringotts', "Hogwarts Express™ - King's Cross", "Hogwarts Express - King's Cross"]],
+      ['World Expo', ['MEN IN BLACK']],
+      ['Springfield, U.S.A.', ['The Simpsons Ride', 'Kang & Kodos']],
+      ['DreamWorks Land', ['Trolls Trollercoaster', 'Po’s Kung Fu Training Camp', "Po's Kung Fu Training Camp"]]
+    ],
+    "Universal's Islands of Adventure": [
+      ['Port of Entry', []],
+      ['Marvel Super Hero Island', ['Incredible Hulk', 'Doctor Doom', 'Storm Force']],
+      ['Toon Lagoon', ['Dudley Do-Right', 'Popeye & Bluto']],
+      ['Skull Island', ['Skull Island']],
+      ['Jurassic Park', ['Jurassic World VelociCoaster', 'Jurassic Park River Adventure', 'Pteranodon Flyers']],
+      ['The Wizarding World of Harry Potter – Hogsmeade', ['Forbidden Journey', 'Flight of the Hippogriff', "Hagrid's Magical Creatures", 'Hogwarts Express']],
+      ['The Lost Continent', []],
+      ['Seuss Landing', ['Cat in the Hat', 'High in the Sky Seuss', 'Caro-Seuss-el', 'One Fish, Two Fish']]
+    ],
+    'Universal Islands of Adventure': null,
+    'Universal Epic Universe': [
+      ['Celestial Park', ['Stardust Racers', 'Constellation Carousel', 'Astronomica']],
+      ['Super Nintendo World', ['Mario Kart', "Yoshi's Adventure", 'Mine-Cart Madness']],
+      ['Dark Universe', ['Monsters Unchained', 'Curse of the Werewolf']],
+      ['The Wizarding World of Harry Potter – Ministry of Magic', ['Battle at the Ministry']],
+      ['How to Train Your Dragon – Isle of Berk', ["Hiccup's Wing Gliders", 'Dragon Racer', 'Fyre Drill']]
+    ],
+    'Epic Universe': null,
+    "Universal's Volcano Bay": [
+      ['The Volcano', ['Ko’okiri Body Plunge', "Ko'okiri Body Plunge", 'Krakatau Aqua Coaster', 'Punga Racers']],
+      ['Rainforest Village', ['Honu', 'Ika Moana', 'Maku', 'Puihi', 'Taniwha Tubes', 'TeAwa The Fearless River']],
+      ['River Village', ['Kopiko Wai Winding River', 'Runamukka Reef', 'Tot Tiki Reef']]
+    ],
+    'Volcano Bay': null
+  };
 
-    try {
-      const payload = await fetchJson(`${API}/${park.id}/children`);
-      const children = Array.isArray(payload?.children) ? payload.children : [];
-      const byId = new Map(children.filter(item => item?.id).map(item => [item.id, item]));
-      const order = new Map(children.filter(item => item?.id).map((item, index) => [item.id, index]));
-      const topology = { byId, order };
-      topologyCache.set(park.id, topology);
-      return topology;
-    } catch (_) {
-      const topology = { byId: new Map(), order: new Map() };
-      topologyCache.set(park.id, topology);
-      return topology;
-    }
+  AREA_RULES['Universal Islands of Adventure'] = AREA_RULES["Universal's Islands of Adventure"];
+  AREA_RULES['Epic Universe'] = AREA_RULES['Universal Epic Universe'];
+  AREA_RULES['Volcano Bay'] = AREA_RULES["Universal's Volcano Bay"];
+
+  function normalizeMatchText(value) {
+    return String(value || '')
+      .normalize('NFKD')
+      .replace(/[™®©]/g, '')
+      .replace(/[’‘]/g, "'")
+      .replace(/[–—]/g, '-')
+      .toLowerCase();
   }
 
-  function isAreaLike(entity) {
-    const type = String(entity?.entityType || '').toUpperCase();
-    if (['LAND', 'AREA', 'ZONE', 'SECTION', 'THEMED_AREA', 'REGION'].includes(type)) return true;
-    return Boolean(entity?.name) && !['ATTRACTION', 'SHOW', 'RESTAURANT', 'PARK', 'DESTINATION'].includes(type);
-  }
+  function resolveMappedArea(parkName, attractionName) {
+    const rules = AREA_RULES[parkName] || [];
+    const normalizedName = normalizeMatchText(attractionName);
 
-  function resolveArea(meta, topology, parkId) {
-    if (!meta) return null;
-    let parentId = meta.parentId;
-    const visited = new Set();
-
-    for (let depth = 0; parentId && parentId !== parkId && depth < 8; depth += 1) {
-      if (visited.has(parentId)) break;
-      visited.add(parentId);
-      const parent = topology.byId.get(parentId);
-      if (!parent) break;
-      if (isAreaLike(parent)) {
-        return {
-          id: parent.id,
-          name: parent.name || 'Other Attractions',
-          order: topology.order.get(parent.id) ?? Number.MAX_SAFE_INTEGER
-        };
+    for (let order = 0; order < rules.length; order += 1) {
+      const [areaName, needles] = rules[order];
+      if (needles.some(needle => normalizedName.includes(normalizeMatchText(needle)))) {
+        return { id: `${parkName}::${areaName}`, name: areaName, order };
       }
-      parentId = parent.parentId;
     }
 
-    return null;
+    return { id: '__other__', name: 'Other Attractions', order: Number.MAX_SAFE_INTEGER };
   }
 
   function attractionCard(item) {
@@ -198,7 +251,7 @@
     </section>`;
   }
 
-  function parkSection(park, items, topology, error = null) {
+  function parkSection(park, items, error = null) {
     if (error) {
       return `<section class="park-waits-block">
         <div class="park-waits-head"><h2>${escapeHtml(park.displayName)}</h2><span>Unavailable</span></div>
@@ -210,10 +263,7 @@
     const areas = new Map();
 
     for (const item of attractions) {
-      const itemId = item?.id ?? item?.entityId;
-      const meta = itemId ? topology.byId.get(itemId) : null;
-      const resolved = resolveArea(meta, topology, park.id);
-      const area = resolved ?? { id: '__other__', name: 'Other Attractions', order: Number.MAX_SAFE_INTEGER };
+      const area = resolveMappedArea(park.name, item?.name);
       if (!areas.has(area.id)) areas.set(area.id, { ...area, attractions: [] });
       areas.get(area.id).attractions.push(item);
     }
@@ -237,7 +287,7 @@
         <p class="eyebrow">${escapeHtml(destination.key === 'wdw' ? 'WDW' : 'UOR')}</p>
         <h2 id="${destination.key}-waits-heading">${escapeHtml(destination.name)}</h2>
       </div>
-      ${parkResults.map(result => parkSection(result.park, result.items || [], result.topology || { byId: new Map(), order: new Map() }, result.error)).join('')}
+      ${parkResults.map(result => parkSection(result.park, result.items || [], result.error)).join('')}
     </section>`;
   }
 
@@ -261,12 +311,9 @@
         const parks = parkCatalog.filter(park => park.destinationKey === destination.key);
         const results = await Promise.all(parks.map(async park => {
           try {
-            const [payload, topology] = await Promise.all([
-              fetchJson(`${API}/${park.id}/live`),
-              loadParkTopology(park)
-            ]);
+            const payload = await fetchJson(`${API}/${park.id}/live`);
             const items = Array.isArray(payload?.liveData) ? payload.liveData : [];
-            return { park, items, topology };
+            return { park, items };
           } catch (error) {
             return { park, error };
           }
