@@ -41,6 +41,7 @@
   const refreshedEl = document.getElementById('all-waits-refresh-time');
   const refreshButton = document.getElementById('all-waits-refresh');
   let parkCatalog = null;
+  const topologyCache = new Map();
   let refreshInFlight = false;
 
   function escapeHtml(value) {
@@ -105,7 +106,6 @@
           destinationName: destination.name
         }));
 
-      // De-duplicate aliases if the provider happens to return equivalent park names.
       const seen = new Set();
       for (const park of parks) {
         if (seen.has(park.displayName)) continue;
@@ -114,6 +114,53 @@
       }
     }
     return discovered;
+  }
+
+  async function loadParkTopology(park) {
+    if (topologyCache.has(park.id)) return topologyCache.get(park.id);
+
+    try {
+      const payload = await fetchJson(`${API}/${park.id}/children`);
+      const children = Array.isArray(payload?.children) ? payload.children : [];
+      const byId = new Map(children.filter(item => item?.id).map(item => [item.id, item]));
+      const order = new Map(children.filter(item => item?.id).map((item, index) => [item.id, index]));
+      const topology = { byId, order };
+      topologyCache.set(park.id, topology);
+      return topology;
+    } catch (_) {
+      const topology = { byId: new Map(), order: new Map() };
+      topologyCache.set(park.id, topology);
+      return topology;
+    }
+  }
+
+  function isAreaLike(entity) {
+    const type = String(entity?.entityType || '').toUpperCase();
+    if (['LAND', 'AREA', 'ZONE', 'SECTION', 'THEMED_AREA', 'REGION'].includes(type)) return true;
+    return Boolean(entity?.name) && !['ATTRACTION', 'SHOW', 'RESTAURANT', 'PARK', 'DESTINATION'].includes(type);
+  }
+
+  function resolveArea(meta, topology, parkId) {
+    if (!meta) return null;
+    let parentId = meta.parentId;
+    const visited = new Set();
+
+    for (let depth = 0; parentId && parentId !== parkId && depth < 8; depth += 1) {
+      if (visited.has(parentId)) break;
+      visited.add(parentId);
+      const parent = topology.byId.get(parentId);
+      if (!parent) break;
+      if (isAreaLike(parent)) {
+        return {
+          id: parent.id,
+          name: parent.name || 'Other Attractions',
+          order: topology.order.get(parent.id) ?? Number.MAX_SAFE_INTEGER
+        };
+      }
+      parentId = parent.parentId;
+    }
+
+    return null;
   }
 
   function attractionCard(item) {
@@ -136,7 +183,22 @@
     </article>`;
   }
 
-  function parkSection(park, items, error = null) {
+  function areaSection(area) {
+    const cards = area.attractions
+      .sort((a, b) => String(a?.name || '').localeCompare(String(b?.name || '')))
+      .map(attractionCard)
+      .join('');
+
+    return `<section class="land-waits-group">
+      <div class="land-waits-head">
+        <h3>${escapeHtml(area.name)}</h3>
+        <span>${area.attractions.length}</span>
+      </div>
+      <div class="wait-grid all-waits-grid">${cards}</div>
+    </section>`;
+  }
+
+  function parkSection(park, items, topology, error = null) {
     if (error) {
       return `<section class="park-waits-block">
         <div class="park-waits-head"><h2>${escapeHtml(park.displayName)}</h2><span>Unavailable</span></div>
@@ -144,12 +206,23 @@
       </section>`;
     }
 
-    const attractions = items
-      .filter(item => String(item?.entityType || '').toUpperCase() === 'ATTRACTION')
-      .sort((a, b) => String(a?.name || '').localeCompare(String(b?.name || '')));
+    const attractions = items.filter(item => String(item?.entityType || '').toUpperCase() === 'ATTRACTION');
+    const areas = new Map();
+
+    for (const item of attractions) {
+      const itemId = item?.id ?? item?.entityId;
+      const meta = itemId ? topology.byId.get(itemId) : null;
+      const resolved = resolveArea(meta, topology, park.id);
+      const area = resolved ?? { id: '__other__', name: 'Other Attractions', order: Number.MAX_SAFE_INTEGER };
+      if (!areas.has(area.id)) areas.set(area.id, { ...area, attractions: [] });
+      areas.get(area.id).attractions.push(item);
+    }
+
+    const grouped = [...areas.values()]
+      .sort((a, b) => a.order - b.order || String(a.name).localeCompare(String(b.name)));
 
     const content = attractions.length
-      ? `<div class="wait-grid all-waits-grid">${attractions.map(attractionCard).join('')}</div>`
+      ? `<div class="land-waits-list">${grouped.map(areaSection).join('')}</div>`
       : '<div class="wait-page-message">No live attraction entries are currently available for this park.</div>';
 
     return `<section class="park-waits-block">
@@ -164,7 +237,7 @@
         <p class="eyebrow">${escapeHtml(destination.key === 'wdw' ? 'WDW' : 'UOR')}</p>
         <h2 id="${destination.key}-waits-heading">${escapeHtml(destination.name)}</h2>
       </div>
-      ${parkResults.map(result => parkSection(result.park, result.items || [], result.error)).join('')}
+      ${parkResults.map(result => parkSection(result.park, result.items || [], result.topology || { byId: new Map(), order: new Map() }, result.error)).join('')}
     </section>`;
   }
 
@@ -188,9 +261,12 @@
         const parks = parkCatalog.filter(park => park.destinationKey === destination.key);
         const results = await Promise.all(parks.map(async park => {
           try {
-            const payload = await fetchJson(`${API}/${park.id}/live`);
+            const [payload, topology] = await Promise.all([
+              fetchJson(`${API}/${park.id}/live`),
+              loadParkTopology(park)
+            ]);
             const items = Array.isArray(payload?.liveData) ? payload.liveData : [];
-            return { park, items };
+            return { park, items, topology };
           } catch (error) {
             return { park, error };
           }
@@ -213,6 +289,5 @@
 
   if (refreshButton) refreshButton.addEventListener('click', () => refresh());
   refresh({ initial: true });
-  // ThemeParks.wiki live data is polled no more frequently than every 5 minutes.
   window.setInterval(() => refresh(), REFRESH_MS);
 })();

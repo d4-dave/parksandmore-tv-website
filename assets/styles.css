@@ -71,3 +71,8 @@ h1{margin:0;font-size:clamp(2.65rem,8vw,6.3rem);font-weight:800;letter-spacing:-
 @media(max-width:1000px){.all-waits-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:780px){.wait-times-page-head{align-items:flex-start;flex-direction:column}.wait-times-actions{white-space:normal}.all-waits-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.all-waits-grid{grid-template-columns:1fr}.park-waits-head{align-items:flex-start;flex-direction:column;gap:5px}}
+.land-waits-list{display:grid;gap:24px}
+.land-waits-group{padding:18px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:rgba(255,255,255,.018)}
+.land-waits-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:12px;padding:0 2px}
+.land-waits-head h3{margin:0;color:#fff;font-size:1rem;letter-spacing:-.015em}
+.land-waits-head span{color:var(--muted);font-size:.72rem}
