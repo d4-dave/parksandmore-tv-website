@@ -1,4 +1,15 @@
+file will not automatically appear there.
+
+Add the Candlelight article as a second object. I’d make the entire articles.json:
+
 [
+  {
+    "title": "Disney Announces 2026 EPCOT Candlelight Processional Narrator Lineup",
+    "date": "2026-09-08",
+    "slug": "2026-epcot-candlelight-processional-narrators",
+    "description": "Disney has announced the 2026 EPCOT Candlelight Processional celebrity narrator lineup, including Robin Roberts, Jason Kelce, Lacey Chabert, and returning favorites.",
+    "image": "/news/images/candlelight-narrator-list.jpg"
+  },
   {
     "title": "Disney’s 2026 D23 Parks Showcase Will Stream Live — Here’s What We’re Watching For",
     "date": "2026-08-10",
